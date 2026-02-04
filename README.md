@@ -1,2 +1,388 @@
-# Valentine
-Valentines Day
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For You 💌</title>
+  <style>
+    :root{
+      --bg:#0b0f1a;
+      --card:#121a2b;
+      --muted:#a7b0c3;
+      --text:#eef2ff;
+      --accent:#ff4d8d;
+      --accent2:#7c5cff;
+      --ring: rgba(255,77,141,.35);
+      --ok: rgba(46, 213, 115, .22);
+      --bad: rgba(255, 71, 87, .22);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 20% 0%, rgba(124,92,255,.25), transparent 60%),
+        radial-gradient(1000px 700px at 90% 10%, rgba(255,77,141,.22), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(255,255,255,.08), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+    .wrap{width:min(880px,100%)}
+
+    header{margin-bottom:18px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px}
+    h1{margin:0; font-weight:900; letter-spacing:-0.02em; font-size: clamp(28px, 4vw, 44px); line-height:1.05;}
+    p{margin:10px 0 0; color:var(--muted); max-width:70ch; font-size: 15px; line-height:1.5}
+
+    .badge{
+      padding:10px 12px;
+      border-radius:999px;
+      background: linear-gradient(135deg, rgba(255,77,141,.18), rgba(124,92,255,.16));
+      border:1px solid rgba(255,255,255,.10);
+      color: #ffd6e6;
+      font-weight:800;
+      white-space:nowrap;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .card{
+      background: rgba(18,26,43,.78);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .hd{padding:18px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .hd h2{margin:0; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:#d9defa}
+    .bd{padding:18px}
+
+    .q{
+      padding:14px;
+      border-radius:16px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      margin-bottom:12px;
+    }
+    .q:last-child{margin-bottom:0}
+
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 8px}
+    input{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:12px;
+      outline:none;
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+    input:focus{border-color: rgba(255,77,141,.55); box-shadow: 0 0 0 6px var(--ring)}
+
+    .hint{margin:10px 0 0; font-size:12px; color:var(--muted)}
+    .status{margin-top:10px; font-size:12px; color:var(--muted)}
+
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:center}
+    button{
+      appearance:none;
+      border:0;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:900;
+      cursor:pointer;
+      color:#0b0f1a;
+      background: linear-gradient(135deg, var(--accent), #ffb3cc);
+      box-shadow: 0 18px 45px rgba(255,77,141,.18);
+      transition: transform .12s ease, filter .12s ease;
+    }
+    button:hover{transform: translateY(-1px); filter: brightness(1.02)}
+    button.secondary{
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color: #e8ecff;
+      font-weight:800;
+      font-size:12px;
+    }
+
+    .ok{border-color: rgba(46, 213, 115, .45) !important; box-shadow: 0 0 0 6px var(--ok) !important;}
+    .bad{border-color: rgba(255, 71, 87, .55) !important; box-shadow: 0 0 0 6px var(--bad) !important;}
+
+    .reveal{display:none; margin-top:14px; padding:16px; border-radius:18px; border:1px solid rgba(255,255,255,.12); background: linear-gradient(135deg, rgba(255,77,141,.14), rgba(124,92,255,.12));}
+    .reveal h3{margin:0; font-size:20px; letter-spacing:-0.01em}
+    .reveal p{margin:8px 0 0; color:#e8ecff}
+
+    .yesBtn{
+      margin-top:12px;
+      width:100%;
+      font-size:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: white;
+      box-shadow: 0 18px 55px rgba(124,92,255,.18);
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-2px)}
+
+    canvas#confetti{position:fixed; inset:0; pointer-events:none; display:none}
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>A tiny memory game 💌</h1>
+        <p>Answer these three questions… and then there’s one more thing I’ve been wanting to ask you.</p>
+      </div>
+      <div class="badge">Valentine mode: ON</div>
+    </header>
+
+    <main class="card" aria-label="Valentine questions">
+      <div class="hd">
+        <h2>Questions</h2>
+        <span class="pill" id="progress">0/3 correct</span>
+      </div>
+
+      <div class="bd">
+        <div class="q">
+          <label for="q1">1) What was the place we first met?</label>
+          <input id="q1" type="text" placeholder="Type your answer" />
+        </div>
+
+        <div class="q">
+          <label for="q2">2) What was the first vacation we took?</label>
+          <input id="q2" type="text" placeholder="Type your answer" />
+        </div>
+
+        <div class="q">
+          <label for="q3">3) When did we first move in together?</label>
+          <input id="q3" type="text" placeholder="Type your answer" />
+          <div class="hint">Tip: you can type the date in your own style (e.g., Nov 1 2022).</div>
+        </div>
+
+        <div class="actions">
+          <button id="check" type="button">Check answers</button>
+          <button id="reset" class="secondary" type="button">Reset</button>
+        </div>
+        <div class="status" id="status">(No pressure — this is just for fun.)</div>
+
+        <section class="reveal" id="reveal" aria-label="Final question">
+          <h3>Okay… last question 😌</h3>
+          <p><b>Will you be my Valentine?</b></p>
+          <button id="yes" class="yesBtn" type="button">YES 💖</button>
+          <p class="hint" id="yesNote" style="display:none; margin-top:10px;">Locked in. Officially my Valentine. 🥰</p>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast" id="toast">✨</div>
+  </div>
+
+  <script>
+    // Answers (case-insensitive, extra spaces ignored)
+    const ANSWERS = {
+      q1: ["sindbad"],
+      q2: ["corfu"],
+      q3: ["november 1st 2022", "november 1 2022", "nov 1 2022", "nov 1st 2022", "11/1/2022"]
+    };
+
+    const el = (id) => document.getElementById(id);
+    const inputs = [el('q1'), el('q2'), el('q3')];
+
+    function normalize(s){
+      let t = (s || "").toLowerCase().trim();
+      // remove a few punctuation marks
+      const remove = [".", ",", "!", "?", ";", ":"];
+      for (const ch of remove) t = t.split(ch).join("");
+      // collapse multiple spaces without regex
+      while (t.indexOf("  ") !== -1) t = t.split("  ").join(" ");
+      return t;
+    }
+
+    function setClass(input, state){
+      input.classList.remove('ok','bad');
+      if (state === 'ok') input.classList.add('ok');
+      if (state === 'bad') input.classList.add('bad');
+    }
+
+    function toast(msg){
+      const t = el('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1200);
+    }
+
+    function check(){
+      let correct = 0;
+
+      for (const inp of inputs){
+        const key = inp.id;
+        const val = normalize(inp.value);
+        if (!val){
+          setClass(inp, null);
+          continue;
+        }
+        let ok = false;
+        for (const a of ANSWERS[key]){
+          if (normalize(a) === val){ ok = true; break; }
+        }
+        if (ok){
+          correct += 1;
+          setClass(inp, 'ok');
+        } else {
+          setClass(inp, 'bad');
+        }
+      }
+
+      el('progress').textContent = correct + "/3 correct";
+
+      if (correct === 3){
+        el('status').textContent = "Perfect. Okay… you’ve earned the last question.";
+        el('reveal').style.display = 'block';
+        toast('💖 unlocked');
+        setTimeout(() => el('reveal').scrollIntoView({behavior:'smooth', block:'start'}), 50);
+      } else {
+        el('status').textContent = "Almost! Try again (spelling/case doesn’t matter).";
+        el('reveal').style.display = 'none';
+      }
+    }
+
+    function resetAll(){
+      for (const inp of inputs){
+        inp.value = '';
+        setClass(inp, null);
+      }
+      el('progress').textContent = "0/3 correct";
+      el('status').textContent = "(No pressure — this is just for fun.)";
+      el('reveal').style.display = 'none';
+      el('yesNote').style.display = 'none';
+      stopConfetti();
+      toast('Reset');
+      inputs[0].focus();
+    }
+
+    // Confetti (tiny, lightweight)
+    const canvas = el('confetti');
+    const ctx = canvas.getContext('2d');
+    let confettiTimer = null;
+    let pieces = [];
+
+    function resize(){
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function startConfetti(){
+      canvas.style.display = 'block';
+      pieces = [];
+      for (let i=0; i<140; i++){
+        pieces.push({
+          x: Math.random() * window.innerWidth,
+          y: -20 - Math.random() * window.innerHeight * 0.4,
+          r: 2 + Math.random() * 4,
+          vx: -1 + Math.random() * 2,
+          vy: 2 + Math.random() * 4,
+          a: Math.random() * Math.PI,
+          va: -0.08 + Math.random() * 0.16,
+          life: 260 + Math.random() * 120
+        });
+      }
+
+      let frame = 0;
+      const tick = () => {
+        frame += 1;
+        ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+        const next = [];
+
+        for (const p of pieces){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.a += p.va;
+          p.life -= 1;
+
+          if (p.y > window.innerHeight + 30) p.y = -20;
+          if (p.x < -30) p.x = window.innerWidth + 30;
+          if (p.x > window.innerWidth + 30) p.x = -30;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.a);
+          ctx.fillStyle = "hsla(" + ((frame*2 + p.x) % 360) + ", 90%, 70%, 0.9)";
+          ctx.fillRect(-p.r, -p.r, p.r*2.2, p.r*2.2);
+          ctx.restore();
+
+          if (p.life > 0) next.push(p);
+        }
+        pieces = next;
+
+        if (pieces.length === 0){
+          stopConfetti();
+          return;
+        }
+        confettiTimer = requestAnimationFrame(tick);
+      };
+      confettiTimer = requestAnimationFrame(tick);
+    }
+
+    function stopConfetti(){
+      if (confettiTimer) cancelAnimationFrame(confettiTimer);
+      confettiTimer = null;
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+      canvas.style.display = 'none';
+    }
+
+    el('check').addEventListener('click', check);
+    el('reset').addEventListener('click', resetAll);
+
+    for (const inp of inputs){
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') check();
+      });
+      inp.addEventListener('input', () => {
+        inp.classList.remove('ok','bad');
+      });
+    }
+
+    el('yes').addEventListener('click', () => {
+      el('yesNote').style.display = 'block';
+      toast('YES 💖');
+      startConfetti();
+    });
+  </script>
+</body>
+</html>
